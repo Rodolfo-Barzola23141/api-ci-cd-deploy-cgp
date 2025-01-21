@@ -1,0 +1,34 @@
+//Este archivo json contiene atributos principales para poder correr el 
+//contenedor de docker
+{
+    "name": "DataPath-MLOps9-FastAPI-Devcontainer",
+    "build": {
+      "dockerfile": "../Dockerfile.dev"
+    }, //Build: Nos dice. ¿Qué archivo voy a tomar para poder crear esta imagen?
+       //Le indicamos que tome el archivo Dockerfile.dev
+       //Al establecer ../ le digo que el archivo Dockerfile.dev está afuera
+       //de la carpeta .devcontainer
+
+    //Ahora hacemos una personalización, vamos a instalar algunas herramientas
+    //como son las siguientes:
+    "customizations": {
+      "vscode": {
+          "extensions": [
+              "ms-python.python",
+              "ms-python.vscode-pylance",
+              "ms-python.black-formatter",
+              "ms-python.debugpy",
+              "ms-azuretools.vscode-docker"
+          ],
+          "settings": {}
+      }
+    },
+    "forwardPorts": [
+      "5678:5678"
+    ], //Puerto donde se publicará nuestro contenedor 
+    "workspaceMount": "source=${localWorkspaceFolder},target=/ws/code,type=bind,consistency=delegated",
+    "workspaceFolder": "/ws/code", //Este campo corresponde al nombre que le colocarás a tu workspace
+    "runArgs": []
+}
+
+

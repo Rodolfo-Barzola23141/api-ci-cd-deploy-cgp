@@ -1,0 +1,30 @@
+##Instalo un Sistema operativo en este caso Python pero la imagen es -slim
+##Las imágenes -slim de Docker se basan en una versión reducida de Debian
+#Específicamente suelen usar la versión slim-buster para las versiones anteriores de Python
+#O slim-bookworm para las versiones más recientes de Python
+#FROM python:3.12-slim indica que la imagen Docker se basa en una imagen preconstruida que 
+#contiene Python 3.12. La parte -slim es crucial porque nos da una pista importante sobre el 
+#sistema operativo subyacente.
+FROM python:3.12-slim
+
+##Instalo sobre este Sistema operativo la CLI
+##Estos 4 comandos nos permitirán instalar la CLI de GCP en nuestro ordenador
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg curl
+
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+RUN apt-get update && apt-get install -y git vim net-tools build-essential google-cloud-cli=473.0.0-0
+
+##Ahora accedemos a nuestro workspace
+WORKDIR /ws/code
+
+##por último utilizamos la variable de entorno de tipo ENV
+##Recordemos que esta variable estará ejecutándose durante la creación de la imagen como
+#también durante toda la ejecución del contenedor
+ENV PYTHONPATH=/ws/code/src
+
+##PYTHONPATH es una variable de entorno crucial para Pytho. Le dice al intérprete de python dónde
+#buscar archivos de módulos cuando usas secuencias "import" en tu código.
+#En resumen. Este comando le dice a Python: "Cuando encuentres una sentencia import, adeás de las ubicaciones estándar, busca también módulo dentro del directorio /ws/coed/src"

@@ -1,0 +1,33 @@
+##Aquí creamos una imagen a partir de un SO en GCP porque recordemos que ya estamos en producción
+FROM python:3.12-slim
+
+##Definimos la variable de entorno
+ENV PYTHONUNBUFFERED True
+
+# set the working directory
+WORKDIR /usr/src/app
+
+# install dependencies
+COPY ./requirements.txt ./
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# copy src code
+COPY ./src ./src
+
+EXPOSE 4000
+
+# start the server
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "4000", "--proxy-headers"]
+
+#construir el repositorio en gcp
+#gcloud artifacts repositories create repo-mlops9-antonient --repository-format docker --project project-mlops9-antonient --location us-central1
+
+##construir la imagen
+#gcloud builds submit --config=cloudbuild.yaml --project proj ect-mlops9-antonient
+
+##poner a correr el servicio de gcp sobre el contenedor
+#gcloud run services replace service.yaml --region us-east1 --project project-mlops9-antonient
+
+##resolver tema de permisos en el deployment
+#gcloud run services set-iam-policy servicio-api-mlops9-datapath gcr-service-policy.yaml --region us-east1 --project project-mlops9-antonient
